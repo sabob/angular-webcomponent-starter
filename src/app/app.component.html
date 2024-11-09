@@ -1,0 +1,17 @@
+<h1>App Works!</h1>
+
+<ul>
+  <li>
+    <a [routerLink]="['/page1']" [skipLocationChange]="properties.skipLocationChange"> Page1</a>
+  </li>
+
+  <li>
+    <a [routerLink]="['/page2']" [skipLocationChange]="properties.skipLocationChange">Page2</a>
+  </li>
+</ul>
+
+<p> Input title2 = {{ title }}</p>
+
+<section role="main" [@fadeAnimation]="animateRoute(outlet)">
+  <router-outlet #outlet="outlet"></router-outlet>
+</section>
