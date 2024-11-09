@@ -14,7 +14,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes,
-      withDisabledInitialNavigation(),
+      //withDisabledInitialNavigation(),
       withPreloading(PreloadAllModules)
     ),
     provideAnimations(),

@@ -4,7 +4,8 @@ body {
   height: 100%;
 }
 
-my-wc {
+// my-wc is the webcomp, my-ng is angular the comp
+my-wc, my-ng {
   display: flex;
   flex-direction: column;
   margin: 0;
