@@ -17,7 +17,6 @@ export class LoaderComponent implements OnInit {
   constructor(private loaderService: LoaderService) { }
 
   ngOnInit(): void {
-    console.log("Loader onInit called");
     this.spinnerVisible$ = this.loaderService.visible$;  // Initialize in ngOnInit
   }
 }
