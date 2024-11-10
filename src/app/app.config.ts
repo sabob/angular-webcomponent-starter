@@ -7,8 +7,9 @@ import {
 } from '@angular/router';
 import {Location} from "@angular/common";
 import {routes} from './app.routes';
-import {provideHttpClient} from "@angular/common/http";
+import {provideHttpClient, withInterceptors} from "@angular/common/http";
 import {provideAnimations} from "@angular/platform-browser/animations";
+import { xhrInterceptorFn } from './core/interceptor/xhr-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,7 +19,7 @@ export const appConfig: ApplicationConfig = {
       withPreloading(PreloadAllModules)
     ),
     provideAnimations(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([xhrInterceptorFn])),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,

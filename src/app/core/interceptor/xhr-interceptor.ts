@@ -1,68 +1,57 @@
-import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { finalize, catchError } from 'rxjs/operators';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import { HttpRequest, HttpHandlerFn, HttpEvent } from '@angular/common/http';
+import { LoaderService } from '../service/loader.service';
 
-@Injectable()
-export class SpinnerInterceptor implements HttpInterceptor {
-  private requestCount = 0;
-  private showSpinnerTimeout: any;
-  private hideSpinnerTimeout: any;
+export const xhrInterceptorFn: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> => {
+  const loaderService = inject(LoaderService);
 
-  // Configurable delays in milliseconds
-  private showDelay: number = 200; // Default show delay
-  private hideDelay: number = 200; // Default hide delay
+  // Set up delay times for showing and hiding the spinner
+  const delayBeforeShowing = 200;  // 200ms delay before showing the spinner
+  const delayBeforeHiding = 200;   // 200ms delay before hiding the spinner
 
-  constructor() {
-    // Optionally, you can dynamically set these delays in the constructor
-    // Example: this.showDelay = 500; this.hideDelay = 300;
-  }
+  // Spinner counter to manage overlapping requests
+  let spinnerCounter = 0;
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this.incrementRequestCount();
+  // Increment the counter when a new request starts
+  spinnerCounter++;
+  console.error('xhr starting', spinnerCounter);
 
-    // If it's the first request, delay showing the spinner
-    if (this.requestCount === 1) {
-      this.showSpinnerWithDelay();
+  // Delay the spinner show and initiate it
+  setTimeout(() => {
+    if (spinnerCounter > 0) {  // Only show the spinner when the first request starts
+      loaderService.show();
     }
+  }, delayBeforeShowing);
 
-    // Handle the HTTP request and response
-    return next.handle(req).pipe(
-      // This will add delay and finalize the spinner
-      finalize(() => this.decrementRequestCount()),
-      catchError((error) => {
-        // Handle the error gracefully and decrement the counter
-        return Observable.throw(error);
-      })
-    );
-  }
+  req = req.clone({
+    withCredentials: true,
+    headers: req.headers.set('X-Requested-With', 'XMLHttpRequest')
+  });
 
-  private incrementRequestCount(): void {
-    this.requestCount++;
-  }
+  return next(req).pipe(
+    tap(() => {
+      // Success case: HTTP request completed successfully
+    }),
+    catchError((error) => {
+      // Handle error case: if the request fails
+      return of(error);  // You can customize error handling here if needed
+    }),
+    finalize(() => {
+      // Decrement the counter when the request completes (success or error)
+      spinnerCounter--;
+      console.error('finalize counter', spinnerCounter);
 
-  private decrementRequestCount(): void {
-    this.requestCount--;
-    if (this.requestCount === 0) {
-      this.hideSpinnerWithDelay();
-    }
-  }
-
-  private showSpinnerWithDelay(): void {
-    // Ensure we don't show the spinner multiple times
-    clearTimeout(this.showSpinnerTimeout);
-    this.showSpinnerTimeout = setTimeout(() => {
-      console.log('Spinner shown'); // Replace with actual spinner logic
-      // Example: this.spinnerService.show();
-    }, this.showDelay); // Use the configurable show delay
-  }
-
-  private hideSpinnerWithDelay(): void {
-    // Only hide the spinner once all requests are completed
-    clearTimeout(this.hideSpinnerTimeout);
-    this.hideSpinnerTimeout = setTimeout(() => {
-      console.log('Spinner hidden'); // Replace with actual spinner hiding logic
-      // Example: this.spinnerService.hide();
-    }, this.hideDelay); // Use the configurable hide delay
-  }
-}
+      // If no more requests are active, hide the spinner after a delay
+      if (spinnerCounter === 0) {
+        console.error('counter == 0');
+        setTimeout(() => {
+          console.error('inside timeout:', spinnerCounter);
+          loaderService.hide();
+        }, delayBeforeHiding);
+      }
+    })
+  );
+};
