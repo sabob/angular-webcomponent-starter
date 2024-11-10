@@ -10,8 +10,8 @@ export class LoaderService {
   visible$ = this._visible.asObservable(); // Observable for loader visibility
 
   // Delay settings for showing and hiding loader
-  private delayBeforeShowing = 1200; // Delay before showing the loader
-  private delayBeforeHiding = 200;  // Delay before hiding the loader
+  private delayBeforeShowing = 200; // Delay before showing the loader
+  private delayBeforeHiding = 300;  // Delay before hiding the loader
 
   // Timeout handles to manage clearing timeouts if called multiple times
   private showTimeoutHandle: any;
@@ -58,7 +58,7 @@ export class LoaderService {
     }
 
     if (this._loaderCounter === 0) {  // Only hide when no requests are active
-      this .hide(); // Hide the loader when all requests are completed
+      this.hide(); // Hide the loader when all requests are completed
     }
   }
 }
