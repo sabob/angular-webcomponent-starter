@@ -1,15 +1,10 @@
 import {APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
-import {
-  PreloadAllModules,
-  provideRouter,
-  withDisabledInitialNavigation,
-  withPreloading
-} from '@angular/router';
+import {PreloadAllModules, provideRouter, withPreloading} from '@angular/router';
 import {Location} from "@angular/common";
 import {routes} from './app.routes';
 import {provideHttpClient, withInterceptors} from "@angular/common/http";
 import {provideAnimations} from "@angular/platform-browser/animations";
-import { xhrInterceptorFn } from './core/interceptor/xhr-interceptor';
+import {xhrInterceptorFn} from './core/interceptor/xhr-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,7 +31,7 @@ export function initializeAppFactory(location: Location) {
 async function initializeApp(location: Location) {
 
   try {
-    // show loader
+    // show a loader indicating app is  bootstrapping
     // TODO, initialize app here, eg call /context for bootstrap info
 
   } catch (err: any) {

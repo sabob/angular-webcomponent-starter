@@ -1,15 +1,24 @@
 {
-  "name": "angular-webcomponent",
-  "version": "0.0.0",
+  "name": "angular-starter",
+  "version": "0.0.1",
   "scripts": {
-    "wc:build": "concurrently \"npm run wc:copy-index\" \"ng build --watch --configuration=production --output-hashing=none\"",
-    "wc:copy-index": "copyfiles -f ./src/preview/index.html ./dist",
+    "copy-index": "ncp src/index/index.html src/index.html",
+    "copy-env-dev": "ncp src/environments/environment-dev.ts src/environments/environment.ts",
+    "copy-env-prod": "ncp src/environments/environment.prod.ts src/environments/environment.ts",
+    "wc:copy-index": "ncp src/index/wc-index.html src/index.html",
+    "wc:copy-env-dev": "ncp src/environments/environment.wc-dev.ts src/environments/environment.ts",
+    "wc:copy-env-prod": "ncp src/environments/environment.wc-prod.ts src/environments/environment.ts",
+
+    "wc:build": "concurrently \"npm run wc:setup-files\" \"ng build --watch --configuration=development --output-hashing=none\"",
+    "wc:setup-files": "concurrently \"npm run wc:copy-index\" \"npm run wc:copy-env-dev\"",
+    "setup-files": "concurrently \"npm run copy-index\" \"npm run copy-env-dev\"",
     "wc:serve": "http-server ./dist -a localhost -p 7080 --proxy http://localhost:7080?",
-    "wc:start": "concurrently \"npm run wc:build\" \"npm run wc:serve\" \"npm run wc:open\"",
+    "wc:start2": "concurrently \"npm run wc:build\" \"npm run wc:serve\" \"npm run wc:open\"",
+    "wc:start": "concurrently \"npm run wc:setup-files\" \"ng serve --open\"",
     "wc:open": "start http://localhost:7080",
     "ng": "ng",
-    "start": "ng serve --open",
-    "build": "ng build",
+    "start": "concurrently \"npm run setup-files\" \"ng serve --open\" --configuration development",
+    "build": "concurrently \"npm run setup-files\" \"ng build --watch --configuration=production\"",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -44,6 +53,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "ncp": "^2.0.0",
     "open": "^10.1.0",
     "typescript": "~5.5.2"
   }
