@@ -18,19 +18,41 @@ The package.json file contains several scripts for managing the Angular project 
 
 ## Angular Scripts
 
+### Setup Scripts
+- **copy-index**: Copies `ng-index.html` from `src/index` to the `src/index.html` location.
+- **copy-env-dev**: Copies the development environment configuration (`environment-dev.ts`) to `src/environments/environment.ts`.
+- **copy-env-prod**: Copies the production environment configuration (`environment.prod.ts`) to `src/environments/environment.ts`.
+- **setup-files**: Prepares the necessary files by running `copy-index` and `copy-env-dev` concurrently.
+
+### Build and Serve Scripts
 - **ng**: Runs Angular CLI commands.
-- **start**: Starts the development server and opens the browser.
-- **build**: Builds the project for production.
-- **watch**: Builds the project in watch mode for development.
-- **test**: Runs the tests.
+- **start**: Sets up the necessary files and starts the development server, opening the app in the browser.
+- **build**: Builds the project for production, setting up the necessary files and outputting to the `dist/ng` directory.
+- **watch**: Builds the project in watch mode for development. Automatically rebuilds the app on source code changes.
+- **serve**: Starts the Angular development server and opens the app in the browser with the development configuration.
+- **test**: Runs the unit tests using Jasmine and Karma.
+
+### Distribution Scripts
+- **dist:serve**: Serves the built Angular app from the `dist/ng/browser` directory using `http-server`, with proxying configured to `http://localhost:7080/?`.
+- **dist:start**: Runs the build, serve, and open commands for the production build of the Angular app concurrently. Builds the app, serves it, and opens it in the browser.
+- **dist:open**: Opens the production build of the app in the browser at `http://localhost:7080/`.
 
 ## Web Component (WC) Scripts
 
-- **wc:build**: Builds the project as a web component and watches for changes. It runs two commands concurrently: copying the `wc-index.html` file to the `dist` directory and building the Angular project with production configuration.
-- **wc:copy-index**: Copies the `wc-index.html` file to the `dist` directory.
-- **wc:serve**: Serves the built web component using `http-server`.
-- **wc:start**: Runs the build, serve, and open commands for the web component concurrently.
-- **wc:open**: Opens the browser to the web component URL.
+### Setup Scripts
+- **wc:copy-index**: Copies the `wc-index.html` file to the `src/index.html` location for the web component.
+- **wc:copy-env-dev**: Copies the web component development environment configuration (`environment.wc-dev.ts`) to `src/environments/environment.ts`.
+- **wc:copy-env-prod**: Copies the web component production environment configuration (`environment.wc-prod.ts`) to `src/environments/environment.ts`.
+- **wc:setup-files**: Prepares the necessary files for the web component by running `wc:copy-index` and `wc:copy-env-dev` concurrently.
+
+### Build and Serve Scripts
+- **wc:build**: Builds the web component for production, setting up necessary files and outputting to the `dist/wc` directory.
+- **wc:start**: Runs the web component setup, build, and serve commands concurrently, starting the development environment for the web component.
+
+### Distribution Scripts
+- **wc:dist:serve**: Serves the built web component from the `dist/wc/browser` directory using `http-server`, with proxying configured to `http://localhost:7085/?`.
+- **wc:dist:start**: Runs the build, serve, and open commands for the web component concurrently. Builds the web component, serves it, and opens it in the browser.
+- **wc:dist:open**: Opens the web component in the browser at `http://localhost:7085/`.
 
 ## Angular vs. Web Component (WC)
 
