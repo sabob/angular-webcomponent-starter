@@ -7,14 +7,10 @@ import {provideRouter, Router} from "@angular/router";
 import {routes} from './app/app.routes';
 import {environment} from './environments/environment';
 
-console.log(environment.production); // Example usage
-console.log("-----------------------------------------", environment)
-
+// the environment.ts files are used to set if the app must run as an angular app, or wc
 let runAsWebComponent = environment.wc;
 
-(window as any).myapp = (window as any).myapp || {};
 if (runAsWebComponent) {
-  (window as any).myapp.wc = true;
   createApplication(appConfig)
     .then((app) => {
 
@@ -25,22 +21,16 @@ if (runAsWebComponent) {
       // Create the custom element from the AppComponent
       const myComponent = createCustomElement(AppComponent, {injector: app.injector});
 
-      // Define the custom element with the name 'test-wc'
+      // Define the custom element with the name 'my-wc'
       customElements.define('my-wc', myComponent);
 
       const router = app.injector.get(Router);
-      //router.initialNavigation(); // WC specific with browser F5
       router.navigate(['/'], {skipLocationChange: true});
-
-      // Bootstrap the application with the existing appConfig
-      //let boot = bootstrapApplication(AppComponent, appConfig);
-      //return boot;
 
     })
     .catch((err) => console.error(err));
 
 } else {
-  (window as any).myapp.wc = false;
   const extendedAppConfig = {
     ...appConfig,
     providers: [
